@@ -1,3 +1,2 @@
 #!/bin/bash
-p=`pwd`
-echo $p
+pwd
