@@ -10,7 +10,7 @@ apt-get install -y haproxy=1.8.\*
 
 echo "ENABLED=1" > /etc/default/haproxy
 
-# Listen to web-01 and web-02 servers                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
+# Listen to web-01 and web-02 servers.
 echo "
    listen load_balancer
    bind *:80
