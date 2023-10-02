@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+# Re configure a web-02 + manage the custom header.
+
+apt-get update
+apt-get install -y nginx
+
+mkdir -p /var/www/onyxvail/html
+echo "Hello World!" > /var/www/html/index.nginx-debian.html
+echo "Ceci n'est pas une page" > /var/www/onyxvail/html/404.html
+
+rm -rf /etc/nginx/sites-available/*
+rm -rf /etc/nginx/sites-enabled/*
+
+echo "server {
+   listen 80 default_server;
+   listen [::]:80 default_server;
+   
+   root /var/www/html;
+   index index.html;
+
+  server_name onyxvail.tech www.onyxvail.tech;
+  rewrite ^/redirect_me$ https://www.youtube.com/watch?v=-NNIex1McWU/ permanent;
+
+  error_page 404 /404.html;
+
+  location / {
+    add_header X-Served-By $HOSTNAME;
+  }
+  
+}" > /etc/nginx/sites-available/onyxvail.config
+
+ln -s /etc/nginx/sites-available/onyxvail.config /etc/nginx/sites-enabled/
+service nginx restart
