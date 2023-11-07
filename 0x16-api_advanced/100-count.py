@@ -1,55 +1,60 @@
 #!/usr/bin/python3
-"""Function to count words in all hot posts of a given Reddit subreddit."""
+"""
+Advanced API module
+"""
 import requests
 
 
-def count_words(subreddit, word_list, instances={}, after="", count=0):
-    """Prints counts of given words found in hot posts of a given subreddit.
-
-    Args:
-        subreddit (str): The subreddit to search.
-        word_list (list): The list of words to search for in post titles.
-        instances (obj): Key/value pairs of words/counts.
-        after (str): The parameter for the next page of the API results.
-        count (int): The parameter of results matched thus far.
+def counter(letter, text, dictionary):
+    """ count letters
     """
-    url = "https://www.reddit.com/r/{}/hot/.json".format(subreddit)
+    for i in text.split():
+        if letter.lower() == i.lower():
+            dictionary[letter] += 1
+
+
+def count_words(subreddit, word_list, dictionary={}, end=None, init=False):
+    """ prints the titles of the first 10 hot posts
+    """
+
+    main_url = "https://www.reddit.com"
+    # set header
     headers = {
-        "User-Agent": "linux:0x16.api.advanced:v1.0.0 (by /u/bdov_)"
-    }
-    params = {
-        "after": after,
-        "count": count,
-        "limit": 100
-    }
-    response = requests.get(url, headers=headers, params=params,
-                            allow_redirects=False)
-    try:
-        results = response.json()
-        if response.status_code == 404:
-            raise Exception
-    except Exception:
-        print("")
+        "User-Agent": "Ubuntu:playing with API (by /u/Cyber)"}
+    # get sub-reddit info
+    request_info = requests.get(
+        main_url + '/r/{}/hot.json?after={}'.format(subreddit, end),
+        headers=headers,
+        allow_redirects=False,
+        )
+    if request_info.status_code == 404:
         return
+    hottest = request_info.json().get("data").get("children")
 
-    results = results.get("data")
-    after = results.get("after")
-    count += results.get("dist")
-    for c in results.get("children"):
-        title = c.get("data").get("title").lower().split()
-        for word in word_list:
-            if word.lower() in title:
-                times = len([t for t in title if t == word.lower()])
-                if instances.get(word) is None:
-                    instances[word] = times
-                else:
-                    instances[word] += times
+    # initialize dictionary
+    if not init:
+        for k in word_list:
+            dictionary[k] = 0
+    init = True
+    for i in hottest:
+        for e in word_list:
+            counter(e, i.get("data").get("title"), dictionary)
+    # check for exit
+    heckya = request_info.json().get("data").get("after")
+    if not heckya:
+        if len(set(list(dictionary.values()))) <= 1:
+            sorted_list = sorted(list(dictionary.items()))
+        else:
+            sorted_list = sorted(
+                            dictionary.items(),
+                            key=lambda x: x[1],
+                            reverse=True)
+        for key, val in sorted_list:
+            if val != 0:
+                print("{}: {}".format(key, val))
+        return
+    return count_words(subreddit, word_list, dictionary, heckya, init)
 
-    if after is None:
-        if len(instances) == 0:
-            print("")
-            return
-        instances = sorted(instances.items(), key=lambda kv: (-kv[1], kv[0]))
-        [print("{}: {}".format(k, v)) for k, v in instances]
-    else:
-        count_words(subreddit, word_list, instances, after, count)
+
+if __name__ == "__main__":
+    number_of_subscribers()
