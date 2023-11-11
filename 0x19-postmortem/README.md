@@ -1,14 +1,13 @@
-
-
-
-
+<p align="center">
+  <img src="https://github.com/onyxvail/alx-system_engineering-devops/blob/d73d5df93b989db5d0e10225264d462fb9f4b191/0x19-postmortem/Postmortem-Alx.png" width="75%" height="75%" alt="Image Description">
+</p>
 
 
 ------------------------------------------------------------------------------------------
- # 0x19. Postmortem
+ # $${\color{blue}0x19. Postmortem }$$
 ------------------------------------------------------------------------------------------
 
-# API Service Outage Postmortem: A Galactic Saga of Techno Troubles
+# API Service Outage Postmortem: A Galactic Saga of Techno Troubles  🏴🏴
 
 ## Issue Summary - Duration :
 The outage struck like a meteor shower on October 20, 2023, from 15:00 to 17:30 (GMT+1).
